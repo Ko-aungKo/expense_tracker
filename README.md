@@ -1,95 +1,161 @@
-# Expense Tracker API 💰📊
+# Expense Tracker Frontend 🖥️📊
 
-A RESTful API built with **Laravel** for managing personal expenses and categories.  
-This project is designed to be used with a frontend (React or any client) to track daily expenses.
-
----
-
-## 🚀 Features
-- CRUD operations for **Expenses** and **Categories**  
-- Dashboard with **summary statistics**  
-- Filtering by date, category, and search keyword  
-- Sorting and pagination support  
-- JSON-based REST API responses  
+A **React + Vite** frontend for the Expense Tracker platform. It connects to a Laravel API to manage **expenses** and **categories**, with filters, sorting, charts, and a clean UI.
 
 ---
 
-## 🛠️ Tech Stack
-- **Backend:** Laravel 12 (PHP 8.2+)  
-- **Database:** MySQL 8  
-- **Authentication:** Laravel Sanctum (optional)  
-- **Frontend Compatible:** React, Vue, or any REST client  
+## ✨ Features
+- Dashboard with summary cards & charts
+- CRUD for **Expenses** and **Categories**
+- Filter by date range, category, and keyword
+- Sort & paginate expense lists
+- Responsive UI (Tailwind CSS)
+- Centralized API layer with Axios + interceptors
+- Context-based state management
 
 ---
 
-## 📦 Installation
+## 🧱 Tech Stack
+- **React 19 + Vite 7**
+- **Tailwind CSS 3**
+- **Axios** for HTTP
+- **React Router** for routing
+- **Recharts** for charts
+
+> **Node version:** Vite 7 requires **Node `^20.19.0` or `>=22.12.0`**. Use `nvm` to switch if needed.
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/expense-tracker-api.git
+nvm install 22
+nvm use 22
+```
 
-cd expense-tracker-api
+---
 
-# Install dependencies
-composer install
+## 📂 Project Structure (key paths)
+
+```
+src/
+  components/
+    Categories/      # CategoryList, CategoryForm
+    Expenses/        # ExpenseList, ExpenseForm, ExpenseFilters
+    Layout/          # AppShell, Header, Sidebar
+    UI/              # Button, Modal, Spinner, EmptyState
+    ErrorBoundary.jsx
+  pages/             # Dashboard.jsx, Expenses.jsx, Categories.jsx
+  context/           # AppProvider, hooks, core
+  services/          # api.js (Axios instance, endpoints, helpers)
+  hooks/             # useApi
+  utils/             # helpers.js (formatters, date utils)
+  main.jsx           # Router + Providers
+  App.jsx            # Routes
+```
+
+---
+
+## ⚙️ Configuration
+
+Create a `.env` file (copy from `.env.example`) and set your API URL:
+
+```bash
+cp .env.example .env
+```
+
+`.env` values:
+
+```env
+# Base URL of your Laravel API (must end with /api)
+VITE_API_URL=http://127.0.0.1:8000/api
+
+# Optional brand info
+VITE_APP_NAME=Expense Tracker
+VITE_APP_VERSION=1.0.0
+```
+
+> The app reads `import.meta.env.VITE_API_URL` in **src/services/api.js**. Default is `http://127.0.0.1:8000/api` if not set.
+
+---
+
+## 🛠️ Local Development
+
+```bash
+# Install deps
 npm install
 
-# Copy environment file
-cp .env.example .env
+# Start dev server
+npm run dev
 
-# Generate app key
-php artisan key:generate
-
-# Run migrations & seed database
-php artisan migrate --seed
+# Lint (optional)
+npm run lint
 ```
+
+Open **http://localhost:5173**
 
 ---
 
-## ▶️ Running the App
+## 🧪 API Assumptions
+
+The frontend expects these endpoints to exist on the backend:
+
+- `GET   /api/dashboard` (with optional query params)  
+- `GET   /api/categories`
+- `POST  /api/categories`
+- `PUT   /api/categories/:id`
+- `DELETE /api/categories/:id`
+- `GET   /api/expenses`
+- `POST  /api/expenses`
+- `PUT   /api/expenses/:id`
+- `DELETE /api/expenses/:id`
+
+If you’re using a different backend URL in production, update **Vercel → Project Settings → Environment Variables** with `VITE_API_URL`.
+
+---
+
+## 🚀 Build & Deploy (Vercel/Netlify)
 
 ```bash
-# Start local server
-php artisan serve
+# Build for production
+npm run build
+
+# Preview locally (optional)
+npm run preview
 ```
 
-Default API URL:  
-`http://127.0.0.1:8000/api`
+**Vercel config:**
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+- **Environment Variables:** `VITE_API_URL=https://your-backend.example.com/api`
+- **Node Version:** 22 (recommended) or 20.19+
+
+**CORS reminder:** Add your deployed frontend origin (e.g. `https://your-app.vercel.app`) to the Laravel **config/cors.php → allowed_origins** list.
 
 ---
 
-## 📖 API Endpoints
+## 🧰 Troubleshooting
 
-### Categories
-- `GET /api/categories` → List all categories  
-- `POST /api/categories` → Create new category  
-- `PUT /api/categories/{id}` → Update category  
-- `DELETE /api/categories/{id}` → Delete category  
+- **EBADENGINE / unsupported engine (vite / @vitejs/plugin-react)**  
+  Install Node **22** or **20.19+** via `nvm`.
 
-### Expenses
-- `GET /api/expenses` → List all expenses  
-- `POST /api/expenses` → Create new expense  
-- `PUT /api/expenses/{id}` → Update expense  
-- `DELETE /api/expenses/{id}` → Delete expense  
+- **Network/CORS errors**  
+  Confirm `VITE_API_URL` is correct and your backend **CORS** allows the frontend origin.
 
-### Dashboard
-- `GET /api/dashboard` → Get summary statistics  
+- **Blank page after deploy**  
+  Make sure your host serves the **`dist/`** folder and you built with the right **VITE_API_URL**.
 
 ---
 
-## 🌐 Deployment
+## 📜 Scripts
 
-If using **Vercel/Netlify frontend** with **Laravel backend**:
-- Update `config/cors.php` to allow your frontend domain.  
-- Example:
-  ```php
-  'allowed_origins' => [
-      'http://localhost:3000',
-      'https://your-frontend.vercel.app'
-  ],
-  ```
+```json
+{
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "lint": "eslint ."
+}
+```
 
 ---
 
-## 📜 License
-This project is licensed under the **MIT License**.
+## 📄 License
+
+MIT © 2025
